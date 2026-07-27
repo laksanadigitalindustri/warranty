@@ -188,6 +188,12 @@
             padding: 10px 0;
         }
 
+        .recaptcha-box {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0 5px 0;
+        }
+
         button.action-btn {
             width: 100%;
             padding: 14px;
@@ -299,10 +305,11 @@
                 </div>
             </div>
 
-            <button class="g-recaptcha action-btn" 
-                data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm" 
-                data-callback="onCheckSubmit" 
-                data-action="submit">
+            <div class="recaptcha-box">
+                <div id="captchaCheck" class="g-recaptcha" data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm"></div>
+            </div>
+
+            <button type="button" class="action-btn" onclick="onCheckSubmit()">
                 <i class="fa-solid fa-search"></i> Periksa Status
             </button>
 
@@ -332,10 +339,11 @@
                 <div class="input-wrapper"><i class="fa-solid fa-camera"></i><input type="file" id="claimFoto" accept="image/*"></div>
             </div>
 
-            <button class="g-recaptcha action-btn" 
-                data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm" 
-                data-callback="onClaimSubmit" 
-                data-action="submit">
+            <div class="recaptcha-box">
+                <div id="captchaClaim" class="g-recaptcha" data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm"></div>
+            </div>
+
+            <button type="button" class="action-btn" onclick="onClaimSubmit()">
                 <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan Klaim
             </button>
 
@@ -355,19 +363,29 @@
         btn.classList.add('active');
     }
 
-    function safeResetCaptcha() {
+    function safeResetCaptcha(widgetId) {
         if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
-            grecaptcha.reset();
+            if (widgetId !== undefined) {
+                grecaptcha.reset(widgetId);
+            } else {
+                grecaptcha.reset();
+            }
         }
     }
 
-    async function onCheckSubmit(token) {
+    async function onCheckSubmit() {
         const id = document.getElementById('warrantyId').value.trim();
         const resultDiv = document.getElementById('result');
+        const token = grecaptcha.getResponse(0);
+
         if (!id) { 
             showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
-            safeResetCaptcha(); 
             return; 
+        }
+
+        if (!token) {
+            showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
+            return;
         }
 
         resultDiv.style.display = "block";
@@ -392,21 +410,26 @@
         } catch(e) {
             showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan sistem. Coba lagi.");
         } finally { 
-            safeResetCaptcha(); 
+            safeResetCaptcha(0); 
         }
     }
 
-    async function onClaimSubmit(token) {
+    async function onClaimSubmit() {
         const noGaransi = document.getElementById('claimNoGaransi').value.trim();
         const nama = document.getElementById('claimNama').value.trim();
         const email = document.getElementById('claimEmail').value.trim();
         const deskripsi = document.getElementById('claimDeskripsi').value.trim();
         const fotoInput = document.getElementById('claimFoto');
         const claimResult = document.getElementById('claimResult');
+        const token = grecaptcha.getResponse(1);
 
         if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
             showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi semua data dan lampirkan foto.");
-            safeResetCaptcha();
+            return;
+        }
+
+        if (!token) {
+            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
             return;
         }
 
@@ -451,12 +474,12 @@
             } catch(e) {
                 showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan jaringan.");
             } finally { 
-                safeResetCaptcha(); 
+                safeResetCaptcha(1); 
             }
         };
         reader.onerror = function () {
             showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal membaca file gambar.");
-            safeResetCaptcha();
+            safeResetCaptcha(1);
         };
     }
 
