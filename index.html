@@ -106,7 +106,6 @@
             margin-top: 6px;
         }
 
-        /* Modern Segmented Navigation Tabs */
         .tab-wrapper {
             padding: 16px 32px 0 32px;
             background: var(--surface-card);
@@ -223,7 +222,6 @@
             color: var(--accent-blue);
         }
 
-        /* Styling khusus File Upload Input */
         .file-input-wrapper {
             border: 1px dashed var(--border-hover);
             background: var(--surface-subtle);
@@ -307,7 +305,6 @@
             transform: translateY(0);
         }
 
-        /* Result Panel Layout */
         #result, #claimResult {
             margin-top: 20px;
             padding: 16px;
@@ -497,7 +494,7 @@
     </div>
 
     <div class="portal-footer">
-        <span><i class="fa-solid fa-lock"></i> Ensiklopedia Enkripsi Sistem</span>
+        <span><i class="fa-solid fa-lock"></i> Terenkripsi & Aman</span>
         <span>© 2026 PT. Laksana Digital Industri</span>
     </div>
 </div>
@@ -523,18 +520,41 @@
 
     function safeResetCaptcha(widgetId) {
         if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
-            if (widgetId !== undefined) {
+            try {
                 grecaptcha.reset(widgetId);
-            } else {
+            } catch (e) {
                 grecaptcha.reset();
             }
         }
     }
 
+    function fetchJSONP(url) {
+        return new Promise((resolve, reject) => {
+            const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
+            const script = document.createElement('script');
+            
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                resolve(data);
+            };
+            
+            script.onerror = function() {
+                delete window[callbackName];
+                if (script.parentNode) document.body.removeChild(script);
+                reject(new Error('JSONP Network Request Failed'));
+            };
+            
+            const delimiter = url.includes('?') ? '&' : '?';
+            script.src = `${url}${delimiter}callback=${callbackName}`;
+            document.body.appendChild(script);
+        });
+    }
+
     async function onCheckSubmit() {
         const id = document.getElementById('warrantyId').value.trim();
         const resultDiv = document.getElementById('result');
-        const token = grecaptcha.getResponse(0);
+        const token = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse(0) : '';
 
         if (!id) { 
             showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
@@ -551,8 +571,8 @@
         resultDiv.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Memeriksa data pada basis data pusat...";
 
         try {
-            const res = await fetch(`${webAppUrl}?id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`);
-            const data = await res.json();
+            const targetUrl = `${webAppUrl}?action=check&id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`;
+            const data = await fetchJSONP(targetUrl);
             
             if (data.valid) {
                 showResult(resultDiv, "valid", `
@@ -560,17 +580,17 @@
                         <i class="fa-solid fa-circle-check"></i> STATUS GARANSI VALID
                     </div>
                     <div class="data-list">
-                        <div class="data-row"><span>No. Garansi</span><strong>${data.noGaransi}</strong></div>
-                        <div class="data-row"><span>Nama Pemilik</span><strong>${data.nama}</strong></div>
-                        <div class="data-row"><span>Tipe Produk</span><strong>${data.produk}</strong></div>
-                        <div class="data-row"><span>Masa Berlaku s/d</span><strong>${data.expired}</strong></div>
+                        <div class="data-row"><span>No. Garansi</span><strong>${data.noGaransi || id}</strong></div>
+                        <div class="data-row"><span>Nama Pemilik</span><strong>${data.nama || '-'}</strong></div>
+                        <div class="data-row"><span>Tipe Produk</span><strong>${data.produk || '-'}</strong></div>
+                        <div class="data-row"><span>Masa Berlaku s/d</span><strong>${data.expired || '-'}</strong></div>
                     </div>
                 `);
             } else {
                 showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar atau telah kadaluarsa.");
             }
         } catch(e) {
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan sistem. Silakan coba kembali.");
+            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal terhubung ke server Apps Script. Pastikan Web App diset ke 'Anyone'.");
         } finally { 
             safeResetCaptcha(0); 
         }
@@ -583,7 +603,7 @@
         const deskripsi = document.getElementById('claimDeskripsi').value.trim();
         const fotoInput = document.getElementById('claimFoto');
         const claimResult = document.getElementById('claimResult');
-        const token = grecaptcha.getResponse(1);
+        const token = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse(1) : '';
 
         if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
             showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi seluruh kolom formulir dan lampirkan foto.");
