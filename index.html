@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Garansi & Klaim Layanan - PT. Laksana Digital Industri</title>
-    <!-- FontAwesome CDN untuk Icon Asli -->
+    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -523,7 +523,7 @@
             try {
                 grecaptcha.reset(widgetId);
             } catch (e) {
-                grecaptcha.reset();
+                try { grecaptcha.reset(); } catch(err){}
             }
         }
     }
@@ -533,16 +533,25 @@
             const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
             const script = document.createElement('script');
             
+            const timeout = setTimeout(() => {
+                cleanup();
+                reject(new Error('TIMEOUT_OR_BLOCKED'));
+            }, 10000);
+
+            function cleanup() {
+                clearTimeout(timeout);
+                if (window[callbackName]) delete window[callbackName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+            }
+
             window[callbackName] = function(data) {
-                delete window[callbackName];
-                document.body.removeChild(script);
+                cleanup();
                 resolve(data);
             };
             
             script.onerror = function() {
-                delete window[callbackName];
-                if (script.parentNode) document.body.removeChild(script);
-                reject(new Error('JSONP Network Request Failed'));
+                cleanup();
+                reject(new Error('SCRIPT_ERROR'));
             };
             
             const delimiter = url.includes('?') ? '&' : '?';
@@ -554,7 +563,11 @@
     async function onCheckSubmit() {
         const id = document.getElementById('warrantyId').value.trim();
         const resultDiv = document.getElementById('result');
-        const token = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse(0) : '';
+        let token = '';
+
+        if (typeof grecaptcha !== 'undefined') {
+            try { token = grecaptcha.getResponse(0); } catch(e){}
+        }
 
         if (!id) { 
             showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
@@ -574,7 +587,7 @@
             const targetUrl = `${webAppUrl}?action=check&id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`;
             const data = await fetchJSONP(targetUrl);
             
-            if (data.valid) {
+            if (data && data.valid) {
                 showResult(resultDiv, "valid", `
                     <div style="font-weight: 700; display:flex; align-items:center; gap:8px;">
                         <i class="fa-solid fa-circle-check"></i> STATUS GARANSI VALID
@@ -590,7 +603,7 @@
                 showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar atau telah kadaluarsa.");
             }
         } catch(e) {
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal terhubung ke server Apps Script. Pastikan Web App diset ke 'Anyone'.");
+            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal terhubung ke Google Apps Script.<br><small><strong>Solusi Backend:</strong> Pada Google Apps Script, lakukan <strong>Deploy > New Deployment</strong>, pilih Web App, dan set <em>'Who has access'</em> ke <strong>'Anyone'</strong>.</small>");
         } finally { 
             safeResetCaptcha(0); 
         }
@@ -603,7 +616,11 @@
         const deskripsi = document.getElementById('claimDeskripsi').value.trim();
         const fotoInput = document.getElementById('claimFoto');
         const claimResult = document.getElementById('claimResult');
-        const token = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse(1) : '';
+        let token = '';
+
+        if (typeof grecaptcha !== 'undefined') {
+            try { token = grecaptcha.getResponse(1); } catch(e){}
+        }
 
         if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
             showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi seluruh kolom formulir dan lampirkan foto.");
@@ -625,6 +642,7 @@
         reader.onload = function () {
             const base64File = reader.result;
             const payload = {
+                action: "claim",
                 noGaransi: noGaransi,
                 nama: nama,
                 email: email,
@@ -633,18 +651,32 @@
                 captcha: token
             };
 
-            const params = new URLSearchParams();
-            params.append("data", JSON.stringify(payload));
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = webAppUrl;
+            form.target = 'hidden_iframe';
+            form.style.display = 'none';
 
-            fetch(webAppUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: params.toString()
-            })
-            .then(() => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'data';
+            input.value = JSON.stringify(payload);
+            form.appendChild(input);
+
+            let iframe = document.getElementById('hidden_iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'hidden_iframe';
+                iframe.name = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+
+            setTimeout(() => {
+                document.body.removeChild(form);
                 showResult(claimResult, "valid", `
                     <div style="font-weight: 700; display:flex; align-items:center; gap:8px;">
                         <i class="fa-solid fa-circle-check"></i> KLAIM BERHASIL TERKIRIM
@@ -659,13 +691,8 @@
                 document.getElementById('claimDeskripsi').value = '';
                 fotoInput.value = '';
                 document.getElementById('fileNameDisplay').textContent = '';
-            })
-            .catch(() => {
-                showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Kesalahan jaringan saat mengirimkan form.");
-            })
-            .finally(() => {
                 safeResetCaptcha(1);
-            });
+            }, 1500);
         };
         reader.onerror = function () {
             showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal membaca berkas gambar.");
