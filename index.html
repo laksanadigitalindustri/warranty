@@ -3,134 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Garansi & Klaim Layanan - PT. Laksana Digital Industri</title>
-    <!-- FontAwesome CDN -->
+    <title>Portal Layanan Garansi & Klaim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         :root {
-            --bg-canvas: #f4f6f9;
-            --surface-card: #ffffff;
-            --surface-subtle: #f8fafc;
-            --border-light: #e2e8f0;
-            --border-hover: #cbd5e1;
-            
-            --primary-700: #0f172a;
-            --primary-600: #1e293b;
-            --accent-blue: #2563eb;
-            --accent-hover: #1d4ed8;
-            
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --text-light: #94a3b8;
-            
-            --status-success-bg: #f0fdf4;
-            --status-success-border: #bbf7d0;
-            --status-success-text: #15803d;
-            
-            --status-error-bg: #fef2f2;
-            --status-error-border: #fecaca;
-            --status-error-text: #b91c1c;
-
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-            
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
+            --primary-blue: #0078d4;
+            --accent-cyan: #00bcf2;
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 15px 35px rgba(0, 120, 212, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
+            --text-main: #1f2937;
+            --text-sub: #4b5563;
+            --valid-green: #10b981;
+            --invalid-red: #ef4444;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-canvas);
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 40%, #e1f5fe 70%, #bae6fd 100%);
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 30px 15px;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .portal-container {
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        body::before {
+            width: 350px;
+            height: 350px;
+            background: rgba(0, 188, 242, 0.35);
+            top: 10%;
+            left: 15%;
+        }
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: rgba(14, 165, 233, 0.25);
+            bottom: 10%;
+            right: 15%;
+        }
+
+        .aero-card {
+            position: relative;
+            z-index: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
             width: 100%;
-            max-width: 580px;
-            background: var(--surface-card);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
-            overflow: hidden;
-        }
-
-        .portal-header {
-            padding: 32px 32px 24px 32px;
-            border-bottom: 1px solid var(--border-light);
-            background: var(--surface-card);
-        }
-
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: var(--accent-blue);
-            background: rgba(37, 99, 235, 0.06);
-            padding: 6px 12px;
+            max-width: 520px;
             border-radius: 20px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(37, 99, 235, 0.12);
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .portal-title {
-            font-size: 22px;
+        .aero-header {
+            padding: 25px 25px 15px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        .aero-title {
+            font-size: 20px;
             font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: -0.4px;
-            line-height: 1.2;
+            color: var(--primary-blue);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .portal-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-
-        .tab-wrapper {
-            padding: 16px 32px 0 32px;
-            background: var(--surface-card);
+        .aero-subtitle {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-top: 4px;
         }
 
         .nav-tabs {
             display: flex;
-            background: var(--surface-subtle);
-            padding: 4px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-light);
-            gap: 4px;
+            padding: 0 20px;
+            gap: 10px;
+            margin-bottom: 5px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px 16px;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--glass-border);
+            color: var(--text-sub);
             font-weight: 600;
             font-size: 13px;
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -138,224 +125,133 @@
         }
 
         .tab-btn.active {
-            background: var(--surface-card);
-            color: var(--accent-blue);
-            box-shadow: var(--shadow-sm);
+            background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+            color: var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.15);
+            border-color: #ffffff;
         }
 
-        .portal-body {
-            padding: 24px 32px 32px 32px;
-        }
-
-        .form-section-title {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-light);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .form-section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-light);
+        .aero-body {
+            padding: 20px 25px 25px;
         }
 
         .input-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .input-group label {
             display: block;
             margin-bottom: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--text-main);
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .input-control-wrapper {
-            position: relative;
+        .input-wrapper {
             display: flex;
             align-items: center;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 12px;
+            padding: 0 14px;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
-        .input-icon {
-            position: absolute;
-            left: 14px;
-            color: var(--text-light);
-            font-size: 14px;
-            pointer-events: none;
-            transition: color 0.2s ease;
+        .input-wrapper:focus-within {
+            background: #ffffff;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 188, 242, 0.2);
         }
 
-        .form-input {
+        .input-wrapper i {
+            color: var(--accent-cyan);
+            margin-right: 12px;
+            font-size: 15px;
+        }
+
+        input[type="text"], input[type="email"], textarea, input[type="file"] {
             width: 100%;
-            padding: 11px 14px 11px 40px;
-            background: var(--surface-card);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
+            padding: 12px 0;
+            background: transparent;
+            border: none;
             color: var(--text-main);
             font-size: 14px;
             outline: none;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
         }
 
-        textarea.form-input {
-            padding: 10px 14px 10px 40px;
+        textarea {
             resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-        }
-
-        .form-input:focus + .input-icon,
-        .input-control-wrapper:focus-within .input-icon {
-            color: var(--accent-blue);
-        }
-
-        .file-input-wrapper {
-            border: 1px dashed var(--border-hover);
-            background: var(--surface-subtle);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .file-input-wrapper:hover {
-            border-color: var(--accent-blue);
-            background: rgba(37, 99, 235, 0.02);
-        }
-
-        .file-input-wrapper input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-input-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .file-input-label i {
-            font-size: 20px;
-            color: var(--accent-blue);
-        }
-
-        .file-name-display {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-top: 4px;
-            word-break: break-all;
+            height: 70px;
+            padding: 10px 0;
         }
 
         .recaptcha-box {
             display: flex;
             justify-content: center;
-            margin: 20px 0 10px 0;
+            margin: 15px 0 5px 0;
         }
 
         button.action-btn {
             width: 100%;
-            padding: 12px 20px;
-            background: var(--primary-700);
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--primary-blue) 100%);
             border: none;
             color: #ffffff;
             font-size: 14px;
-            font-weight: 600;
-            border-radius: var(--radius-sm);
+            font-weight: 700;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 6px 20px rgba(0, 120, 212, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             margin-top: 10px;
         }
 
         button.action-btn:hover {
-            background: var(--primary-600);
             transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        button.action-btn:active {
-            transform: translateY(0);
+            box-shadow: 0 8px 25px rgba(0, 120, 212, 0.4);
+            filter: brightness(1.05);
         }
 
         #result, #claimResult {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: var(--radius-sm);
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: none;
             font-size: 13px;
             line-height: 1.6;
-            animation: fadeIn 0.3s ease;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+        .valid {
+            border-left: 4px solid var(--valid-green) !important;
+            color: #065f46;
         }
 
-        .result-card.valid {
-            background: var(--status-success-bg);
-            border: 1px solid var(--status-success-border);
-            color: var(--status-success-text);
-        }
-
-        .result-card.invalid {
-            background: var(--status-error-bg);
-            border: 1px solid var(--status-error-border);
-            color: var(--status-error-text);
-        }
-
-        .data-list {
-            margin-top: 10px;
-            background: var(--surface-card);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: var(--radius-sm);
-            padding: 8px 12px;
+        .invalid {
+            border-left: 4px solid var(--invalid-red) !important;
+            color: #991b1b;
         }
 
         .data-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border-light);
-            color: var(--text-main);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 6px 0;
         }
 
         .data-row:last-child {
             border-bottom: none;
-        }
-
-        .data-row span {
-            color: var(--text-muted);
-            font-size: 12px;
         }
 
         .tab-content {
@@ -366,58 +262,46 @@
             display: block;
         }
 
-        .portal-footer {
-            padding: 16px 32px;
-            background: var(--surface-subtle);
-            border-top: 1px solid var(--border-light);
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-
-        .portal-footer span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 120, 212, 0.3);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="portal-container">
-    <div class="portal-header">
-        <div class="brand-badge">
-            <i class="fa-solid fa-shield-halved"></i> PT. Laksana Digital Industri
+<div class="aero-card">
+    <div class="aero-header">
+        <div class="aero-title">
+            <i class="fa-solid fa-shield-halved"></i> PORTAL GARANSI RESMI
         </div>
-        <h1 class="portal-title">Portal Garansi & Klaim Layanan</h1>
-        <p class="portal-subtitle">Sistem verifikasi resmi garansi unit dan pengajuan klaim teknis.</p>
+        <div class="aero-subtitle">PT. Laksana Digital Industri</div>
     </div>
 
-    <div class="tab-wrapper">
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('checkTab', this)">
-                <i class="fa-solid fa-magnifying-glass"></i> Cek Status Garansi
-            </button>
-            <button class="tab-btn" onclick="switchTab('claimTab', this)">
-                <i class="fa-solid fa-file-signature"></i> Pengajuan Klaim
-            </button>
-        </div>
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('checkTab', this)">
+            <i class="fa-solid fa-magnifying-glass"></i> Cek Garansi
+        </button>
+        <button class="tab-btn" onclick="switchTab('claimTab', this)">
+            <i class="fa-solid fa-file-signature"></i> Klaim Garansi
+        </button>
     </div>
     
-    <div class="portal-body">
+    <div class="aero-body">
         
         <!-- TAB 1: CEK GARANSI -->
         <div id="checkTab" class="tab-content active">
-            <div class="form-section-title">Pencarian Unit</div>
-            
             <div class="input-group">
-                <label for="warrantyId">Nomor Serial / Kode Garansi</label>
-                <div class="input-control-wrapper">
-                    <i class="fa-solid fa-barcode input-icon"></i>
-                    <input type="text" id="warrantyId" class="form-input" placeholder="Masukkan ID Garansi (Contoh: GRS-12345)" autocomplete="off">
+                <label for="warrantyId">Nomor Garansi</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-barcode"></i>
+                    <input type="text" id="warrantyId" placeholder="Contoh: GRS-12345" autocomplete="off">
                 </div>
             </div>
 
@@ -426,58 +310,33 @@
             </div>
 
             <button type="button" class="action-btn" onclick="onCheckSubmit()">
-                <i class="fa-solid fa-search"></i> Periksa Garansi
+                <i class="fa-solid fa-search"></i> Periksa Status
             </button>
 
-            <div id="result" class="result-card"></div>
+            <div id="result"></div>
         </div>
 
         <!-- TAB 2: KLAIM GARANSI -->
         <div id="claimTab" class="tab-content">
-            <div class="form-section-title">Identitas & Detail Klaim</div>
-
             <div class="input-group">
-                <label for="claimNoGaransi">Nomor Garansi Unit</label>
-                <div class="input-control-wrapper">
-                    <i class="fa-solid fa-id-card input-icon"></i>
-                    <input type="text" id="claimNoGaransi" class="form-input" placeholder="GRS-12345">
-                </div>
+                <label for="claimNoGaransi">Nomor Garansi</label>
+                <div class="input-wrapper"><i class="fa-solid fa-id-card"></i><input type="text" id="claimNoGaransi" placeholder="GRS-12345"></div>
             </div>
-
             <div class="input-group">
-                <label for="claimNama">Nama Lengkap Pemilik</label>
-                <div class="input-control-wrapper">
-                    <i class="fa-solid fa-user input-icon"></i>
-                    <input type="text" id="claimNama" class="form-input" placeholder="Sesuai kartu identitas">
-                </div>
+                <label for="claimNama">Nama Lengkap</label>
+                <div class="input-wrapper"><i class="fa-solid fa-user"></i><input type="text" id="claimNama" placeholder="Nama Pelanggan"></div>
             </div>
-
             <div class="input-group">
-                <label for="claimEmail">Alamat Email Aktif</label>
-                <div class="input-control-wrapper">
-                    <i class="fa-solid fa-envelope input-icon"></i>
-                    <input type="email" id="claimEmail" class="form-input" placeholder="nama@perusahaan.com">
-                </div>
+                <label for="claimEmail">Email Aktif</label>
+                <div class="input-wrapper"><i class="fa-solid fa-envelope"></i><input type="email" id="claimEmail" placeholder="nama@email.com"></div>
             </div>
-
             <div class="input-group">
-                <label for="claimDeskripsi">Deskripsi Kendala Hardware / Sistem</label>
-                <div class="input-control-wrapper">
-                    <i class="fa-solid fa-triangle-exclamation input-icon" style="top: 14px;"></i>
-                    <textarea id="claimDeskripsi" class="form-input" placeholder="Jelaskan detail masalah fisik atau fungsionalitas unit..."></textarea>
-                </div>
+                <label for="claimDeskripsi">Deskripsi Kerusakan</label>
+                <div class="input-wrapper"><i class="fa-solid fa-wrench"></i><textarea id="claimDeskripsi" placeholder="Jelaskan detail kendala unit..."></textarea></div>
             </div>
-
             <div class="input-group">
-                <label>Bukti Foto Kerusakan (Maks. 5MB)</label>
-                <div class="file-input-wrapper">
-                    <input type="file" id="claimFoto" accept="image/*" onchange="updateFileName(this)">
-                    <div class="file-input-label">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span>Klik atau seret foto ke area ini</span>
-                    </div>
-                    <div id="fileNameDisplay" class="file-name-display"></div>
-                </div>
+                <label for="claimFoto">Foto Kerusakan (Max 5MB)</label>
+                <div class="input-wrapper"><i class="fa-solid fa-camera"></i><input type="file" id="claimFoto" accept="image/*"></div>
             </div>
 
             <div class="recaptcha-box">
@@ -485,22 +344,17 @@
             </div>
 
             <button type="button" class="action-btn" onclick="onClaimSubmit()">
-                <i class="fa-solid fa-paper-plane"></i> Kirim Form Klaim
+                <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan Klaim
             </button>
 
-            <div id="claimResult" class="result-card"></div>
+            <div id="claimResult"></div>
         </div>
 
-    </div>
-
-    <div class="portal-footer">
-        <span><i class="fa-solid fa-lock"></i> Terenkripsi & Aman</span>
-        <span>© 2026 PT. Laksana Digital Industri</span>
     </div>
 </div>
 
 <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2WheuyiwG9ycqPnlFRDNhrJSh9p4/exec";
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2Whe9uyiwG9ycqPnlFRDNhrJSh9p4/exec";
 
     function switchTab(tabId, btn) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -509,65 +363,20 @@
         btn.classList.add('active');
     }
 
-    function updateFileName(input) {
-        const display = document.getElementById('fileNameDisplay');
-        if (input.files && input.files[0]) {
-            display.textContent = "Terlampir: " + input.files[0].name;
-        } else {
-            display.textContent = "";
-        }
-    }
-
     function safeResetCaptcha(widgetId) {
         if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
-            try {
+            if (widgetId !== undefined) {
                 grecaptcha.reset(widgetId);
-            } catch (e) {
-                try { grecaptcha.reset(); } catch(err){}
+            } else {
+                grecaptcha.reset();
             }
         }
-    }
-
-    function fetchJSONP(url) {
-        return new Promise((resolve, reject) => {
-            const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
-            const script = document.createElement('script');
-            
-            const timeout = setTimeout(() => {
-                cleanup();
-                reject(new Error('TIMEOUT_OR_BLOCKED'));
-            }, 10000);
-
-            function cleanup() {
-                clearTimeout(timeout);
-                if (window[callbackName]) delete window[callbackName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-            }
-
-            window[callbackName] = function(data) {
-                cleanup();
-                resolve(data);
-            };
-            
-            script.onerror = function() {
-                cleanup();
-                reject(new Error('SCRIPT_ERROR'));
-            };
-            
-            const delimiter = url.includes('?') ? '&' : '?';
-            script.src = `${url}${delimiter}callback=${callbackName}`;
-            document.body.appendChild(script);
-        });
     }
 
     async function onCheckSubmit() {
         const id = document.getElementById('warrantyId').value.trim();
         const resultDiv = document.getElementById('result');
-        let token = '';
-
-        if (typeof grecaptcha !== 'undefined') {
-            try { token = grecaptcha.getResponse(0); } catch(e){}
-        }
+        const token = grecaptcha.getResponse(0);
 
         if (!id) { 
             showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
@@ -575,35 +384,31 @@
         }
 
         if (!token) {
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon verifikasi reCAPTCHA.");
+            showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
             return;
         }
 
         resultDiv.style.display = "block";
-        resultDiv.className = "result-card";
-        resultDiv.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Memeriksa data pada basis data pusat...";
+        resultDiv.className = "";
+        resultDiv.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Memeriksa data...";
 
         try {
-            const targetUrl = `${webAppUrl}?action=check&id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`;
-            const data = await fetchJSONP(targetUrl);
+            const res = await fetch(`${webAppUrl}?id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`);
+            const data = await res.json();
             
-            if (data && data.valid) {
+            if (data.valid) {
                 showResult(resultDiv, "valid", `
-                    <div style="font-weight: 700; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-circle-check"></i> STATUS GARANSI VALID
-                    </div>
-                    <div class="data-list">
-                        <div class="data-row"><span>No. Garansi</span><strong>${data.noGaransi || id}</strong></div>
-                        <div class="data-row"><span>Nama Pemilik</span><strong>${data.nama || '-'}</strong></div>
-                        <div class="data-row"><span>Tipe Produk</span><strong>${data.produk || '-'}</strong></div>
-                        <div class="data-row"><span>Masa Berlaku s/d</span><strong>${data.expired || '-'}</strong></div>
-                    </div>
+                    <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> GARANSI VALID</div>
+                    <div class="data-row"><span>No. Garansi:</span><strong>${data.noGaransi}</strong></div>
+                    <div class="data-row"><span>Nama:</span><strong>${data.nama}</strong></div>
+                    <div class="data-row"><span>Produk:</span><strong>${data.produk}</strong></div>
+                    <div class="data-row"><span>Masa Kadaluarsa:</span><strong>${data.expired}</strong></div>
                 `);
             } else {
-                showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar atau telah kadaluarsa.");
+                showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar / tidak valid.");
             }
         } catch(e) {
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal terhubung ke Google Apps Script.<br><small><strong>Solusi Backend:</strong> Pada Google Apps Script, lakukan <strong>Deploy > New Deployment</strong>, pilih Web App, dan set <em>'Who has access'</em> ke <strong>'Anyone'</strong>.</small>");
+            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan sistem. Coba lagi.");
         } finally { 
             safeResetCaptcha(0); 
         }
@@ -616,33 +421,28 @@
         const deskripsi = document.getElementById('claimDeskripsi').value.trim();
         const fotoInput = document.getElementById('claimFoto');
         const claimResult = document.getElementById('claimResult');
-        let token = '';
-
-        if (typeof grecaptcha !== 'undefined') {
-            try { token = grecaptcha.getResponse(1); } catch(e){}
-        }
+        const token = grecaptcha.getResponse(1);
 
         if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
-            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi seluruh kolom formulir dan lampirkan foto.");
+            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi semua data dan lampirkan foto.");
             return;
         }
 
         if (!token) {
-            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon verifikasi reCAPTCHA.");
+            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
             return;
         }
 
         claimResult.style.display = "block";
-        claimResult.className = "result-card";
-        claimResult.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Mengirimkan data klaim ke server...";
+        claimResult.className = "";
+        claimResult.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Mengirim pengajuan klaim...";
 
         const file = fotoInput.files[0];
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = function () {
+        reader.onload = async function () {
             const base64File = reader.result;
             const payload = {
-                action: "claim",
                 noGaransi: noGaransi,
                 nama: nama,
                 email: email,
@@ -651,58 +451,41 @@
                 captcha: token
             };
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = webAppUrl;
-            form.target = 'hidden_iframe';
-            form.style.display = 'none';
+            try {
+                const res = await fetch(webAppUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
 
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'data';
-            input.value = JSON.stringify(payload);
-            form.appendChild(input);
-
-            let iframe = document.getElementById('hidden_iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.id = 'hidden_iframe';
-                iframe.name = 'hidden_iframe';
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
+                if (data.success) {
+                    showResult(claimResult, "valid", `
+                        <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> KLAIM BERHASIL DIAJUKAN</div>
+                        <div class="data-row"><span>No. Tiket:</span><strong>${data.ticketId}</strong></div>
+                        <div class="data-row"><span>Status:</span><strong>MENUNGGU ANALISA</strong></div>
+                        <small style="display:block; margin-top:8px; color:#4b5563;">Bukti penerimaan telah dikirimkan ke email Anda.</small>
+                    `);
+                    document.getElementById('claimNoGaransi').value = '';
+                    document.getElementById('claimDeskripsi').value = '';
+                    fotoInput.value = '';
+                } else {
+                    showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Gagal memproses klaim: " + (data.error || "Kesalahan internal."));
+                }
+            } catch(e) {
+                showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan jaringan.");
+            } finally { 
+                safeResetCaptcha(1); 
             }
-
-            document.body.appendChild(form);
-            form.submit();
-
-            setTimeout(() => {
-                document.body.removeChild(form);
-                showResult(claimResult, "valid", `
-                    <div style="font-weight: 700; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-circle-check"></i> KLAIM BERHASIL TERKIRIM
-                    </div>
-                    <p style="margin-top:6px; color: var(--text-muted); font-size: 12px;">
-                        Pengajuan Anda telah diterima oleh sistem. Tim teknis PT. Laksana Digital Industri akan memproses tiket dalam kurun waktu 1x24 jam.
-                    </p>
-                `);
-                document.getElementById('claimNoGaransi').value = '';
-                document.getElementById('claimNama').value = '';
-                document.getElementById('claimEmail').value = '';
-                document.getElementById('claimDeskripsi').value = '';
-                fotoInput.value = '';
-                document.getElementById('fileNameDisplay').textContent = '';
-                safeResetCaptcha(1);
-            }, 1500);
         };
         reader.onerror = function () {
-            showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal membaca berkas gambar.");
+            showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal membaca file gambar.");
             safeResetCaptcha(1);
         };
     }
 
     function showResult(el, className, content) {
         el.style.display = "block";
-        el.className = "result-card " + className;
+        el.className = className;
         el.innerHTML = content;
     }
 </script>
