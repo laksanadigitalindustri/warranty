@@ -354,7 +354,7 @@
 </div>
 
 <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2Whe9uyiwG9ycqPnlFRDNhrJSh9p4/exec";
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2WheuyiwG9ycqPnlFRDNhrJSh9p4/exec";
 
     function switchTab(tabId, btn) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -452,8 +452,12 @@
             };
 
             try {
+                // Modifikasi Fetch: Penggunaan text/plain untuk bypass pemicuan CORS OPTIONS oleh Google Apps Script
                 const res = await fetch(webAppUrl, {
                     method: 'POST',
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
