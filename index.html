@@ -2,512 +2,553 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Layanan Garansi & Klaim</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Portal Layanan Garansi - PT. Laksana Digital Industri</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         :root {
-            --primary-blue: #0078d4;
-            --accent-cyan: #00bcf2;
-            --glass-bg: rgba(255, 255, 255, 0.55);
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --glass-shadow: 0 15px 35px rgba(0, 120, 212, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
-            --text-main: #1f2937;
-            --text-sub: #4b5563;
-            --valid-green: #10b981;
-            --invalid-red: #ef4444;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f8fafc;
+            --surface-white: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --valid-green: #059669;
+            --valid-bg: #ecfdf5;
+            --invalid-red: #dc2626;
+            --invalid-bg: #fef2f2;
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 40%, #e1f5fe 70%, #bae6fd 100%);
+            background-color: var(--bg-body);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
         }
 
-        body::before, body::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: 0;
-        }
-        body::before {
-            width: 350px;
-            height: 350px;
-            background: rgba(0, 188, 242, 0.35);
-            top: 10%;
-            left: 15%;
-        }
-        body::after {
-            width: 400px;
-            height: 400px;
-            background: rgba(14, 165, 233, 0.25);
-            bottom: 10%;
-            right: 15%;
-        }
-
-        .aero-card {
-            position: relative;
-            z-index: 1;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
+        /* Desktop Container: Layout Kotak/Card Card Presisi */
+        .app-container {
             width: 100%;
             max-width: 520px;
-            border-radius: 20px;
+            background: var(--surface-white);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
             overflow: hidden;
-            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
-        .aero-header {
-            padding: 25px 25px 15px;
+        .app-header {
+            padding: 24px 24px 16px;
             text-align: center;
-            background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--surface-white);
         }
 
-        .aero-title {
-            font-size: 20px;
+        .brand-company {
+            font-size: 11px;
             font-weight: 700;
-            color: var(--primary-blue);
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            color: var(--primary-color);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
         }
 
-        .aero-subtitle {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-top: 4px;
-        }
-
-        .nav-tabs {
-            display: flex;
-            padding: 0 20px;
-            gap: 10px;
-            margin-bottom: 5px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid var(--glass-border);
-            color: var(--text-sub);
-            font-weight: 600;
-            font-size: 13px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
-            color: var(--primary-blue);
-            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.15);
-            border-color: #ffffff;
+        .navigation-bar {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            margin: 16px 24px 0;
+            border-radius: 10px;
+            gap: 4px;
         }
 
-        .aero-body {
-            padding: 20px 25px 25px;
-        }
-
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 12px;
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
             font-weight: 600;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-btn.active {
+            background: var(--surface-white);
+            color: var(--primary-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .main-content {
+            padding: 24px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .field-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group label {
+            font-size: 11px;
+            font-weight: 700;
             color: var(--text-sub);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .input-wrapper {
+        .field-wrapper {
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(203, 213, 225, 0.8);
-            border-radius: 12px;
-            padding: 0 14px;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-        }
-
-        .input-wrapper:focus-within {
             background: #ffffff;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 3px rgba(0, 188, 242, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0 12px;
+            transition: all 0.2s ease;
         }
 
-        .input-wrapper i {
-            color: var(--accent-cyan);
-            margin-right: 12px;
-            font-size: 15px;
+        .field-wrapper:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        input[type="text"], input[type="email"], textarea, input[type="file"] {
+        .field-wrapper i {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .field-wrapper input[type="text"],
+        .field-wrapper input[type="email"],
+        .field-wrapper textarea {
             width: 100%;
             padding: 12px 0;
             background: transparent;
             border: none;
-            color: var(--text-main);
-            font-size: 14px;
             outline: none;
+            font-size: 14px;
+            color: var(--text-main);
         }
 
-        textarea {
+        .field-wrapper textarea {
             resize: vertical;
-            height: 70px;
-            padding: 10px 0;
+            min-height: 80px;
         }
 
-        .recaptcha-box {
+        .field-wrapper input[type="file"] {
+            width: 100%;
+            padding: 8px 0;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        .captcha-container {
+            margin: 18px 0 10px;
             display: flex;
             justify-content: center;
-            margin: 15px 0 5px 0;
+            overflow-x: auto;
         }
 
-        button.action-btn {
+        .btn-submit {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--primary-blue) 100%);
-            border: none;
+            background: var(--primary-color);
             color: #ffffff;
+            border: none;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 700;
-            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 6px 20px rgba(0, 120, 212, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
-        button.action-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 25px rgba(0, 120, 212, 0.4);
-            filter: brightness(1.05);
+        .btn-submit:hover {
+            background: var(--primary-hover);
         }
 
-        #result, #claimResult {
+        .output-box {
             margin-top: 18px;
-            padding: 15px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 14px;
+            border-radius: 8px;
             display: none;
             font-size: 13px;
-            line-height: 1.6;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            line-height: 1.5;
+            border: 1px solid transparent;
         }
 
-        .valid {
-            border-left: 4px solid var(--valid-green) !important;
-            color: #065f46;
+        .output-box.valid {
+            background-color: var(--valid-bg);
+            border-color: rgba(5, 150, 105, 0.2);
+            color: var(--valid-green);
         }
 
-        .invalid {
-            border-left: 4px solid var(--invalid-red) !important;
-            color: #991b1b;
+        .output-box.invalid {
+            background-color: var(--invalid-bg);
+            border-color: rgba(220, 38, 38, 0.2);
+            color: var(--invalid-red);
         }
 
         .data-row {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: var(--text-main);
         }
 
         .data-row:last-child {
             border-bottom: none;
         }
 
-        .tab-content {
-            display: none;
+        .data-row span {
+            color: var(--text-sub);
         }
 
-        .tab-content.active {
-            display: block;
-        }
+        /* Responsive Mobile Native App UI Structure */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                background: var(--surface-white);
+                align-items: stretch;
+            }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0, 120, 212, 0.3);
-            border-radius: 10px;
+            .app-container {
+                max-width: 100%;
+                border-radius: 0;
+                border: none;
+                box-shadow: none;
+                min-height: 100vh;
+            }
+
+            .app-header {
+                position: sticky;
+                top: 0;
+                z-index: 90;
+                padding: 16px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            }
+
+            .brand-title {
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 16px 16px 100px 16px;
+            }
+
+            .navigation-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+                border-radius: 0;
+                background: var(--surface-white);
+                border-top: 1px solid var(--border-color);
+                z-index: 100;
+                padding: 8px 16px;
+                gap: 8px;
+            }
+
+            .nav-btn {
+                flex-direction: column;
+                gap: 4px;
+                padding: 6px 0;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+
+            .nav-btn i {
+                font-size: 18px;
+            }
+
+            .nav-btn.active {
+                background: rgba(37, 99, 235, 0.08);
+                box-shadow: none;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="aero-card">
-    <div class="aero-header">
-        <div class="aero-title">
-            <i class="fa-solid fa-shield-halved"></i> PORTAL GARANSI RESMI
-        </div>
-        <div class="aero-subtitle">PT. Laksana Digital Industri</div>
-    </div>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="brand-company">PT. Laksana Digital Industri</div>
+            <div class="brand-title">
+                <i class="fa-solid fa-shield-halved"></i> Portal Garansi
+            </div>
+        </header>
 
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('checkTab', this)">
-            <i class="fa-solid fa-magnifying-glass"></i> Cek Garansi
-        </button>
-        <button class="tab-btn" onclick="switchTab('claimTab', this)">
-            <i class="fa-solid fa-file-signature"></i> Klaim Garansi
-        </button>
-    </div>
-    
-    <div class="aero-body">
-        
-        <!-- TAB 1: CEK GARANSI -->
-        <div id="checkTab" class="tab-content active">
-            <div class="input-group">
-                <label for="warrantyId">Nomor Garansi</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-barcode"></i>
-                    <input type="text" id="warrantyId" placeholder="Contoh: GRS-12345" autocomplete="off">
+        <nav class="navigation-bar">
+            <button class="nav-btn active" onclick="switchTab('checkTab', this)">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Cek Garansi</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('claimTab', this)">
+                <i class="fa-solid fa-file-signature"></i>
+                <span>Klaim Garansi</span>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <!-- TAB 1: CEK GARANSI -->
+            <section id="checkTab" class="tab-panel active">
+                <div class="field-group">
+                    <label for="warrantyId">Nomor Garansi</label>
+                    <div class="field-wrapper">
+                        <i class="fa-solid fa-barcode"></i>
+                        <input type="text" id="warrantyId" placeholder="Contoh: GRS-12345" autocomplete="off">
+                    </div>
                 </div>
-            </div>
 
-            <div class="recaptcha-box">
-                <div id="captchaCheck" class="g-recaptcha" data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm"></div>
-            </div>
+                <div class="captcha-container">
+                    <div id="captchaCheck" class="g-recaptcha" data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm"></div>
+                </div>
 
-            <button type="button" class="action-btn" onclick="onCheckSubmit()">
-                <i class="fa-solid fa-search"></i> Periksa Status
-            </button>
+                <button type="button" class="btn-submit" onclick="onCheckSubmit()">
+                    <i class="fa-solid fa-search"></i> Periksa Status
+                </button>
 
-            <div id="result"></div>
-        </div>
+                <div id="result" class="output-box"></div>
+            </section>
 
-        <!-- TAB 2: KLAIM GARANSI -->
-        <div id="claimTab" class="tab-content">
-            <div class="input-group">
-                <label for="claimNoGaransi">Nomor Garansi</label>
-                <div class="input-wrapper"><i class="fa-solid fa-id-card"></i><input type="text" id="claimNoGaransi" placeholder="GRS-12345"></div>
-            </div>
-            <div class="input-group">
-                <label for="claimNama">Nama Lengkap</label>
-                <div class="input-wrapper"><i class="fa-solid fa-user"></i><input type="text" id="claimNama" placeholder="Nama Pelanggan"></div>
-            </div>
-            <div class="input-group">
-                <label for="claimEmail">Email Aktif</label>
-                <div class="input-wrapper"><i class="fa-solid fa-envelope"></i><input type="email" id="claimEmail" placeholder="nama@email.com"></div>
-            </div>
-            <div class="input-group">
-                <label for="claimDeskripsi">Deskripsi Kerusakan</label>
-                <div class="input-wrapper"><i class="fa-solid fa-wrench"></i><textarea id="claimDeskripsi" placeholder="Jelaskan detail kendala unit..."></textarea></div>
-            </div>
-            <div class="input-group">
-                <label for="claimFoto">Foto Kerusakan (Max 5MB)</label>
-                <div class="input-wrapper"><i class="fa-solid fa-camera"></i><input type="file" id="claimFoto" accept="image/*"></div>
-            </div>
+            <!-- TAB 2: KLAIM GARANSI -->
+            <section id="claimTab" class="tab-panel">
+                <div class="field-group">
+                    <label for="claimNoGaransi">Nomor Garansi</label>
+                    <div class="field-wrapper">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" id="claimNoGaransi" placeholder="GRS-12345">
+                    </div>
+                </div>
 
-            <div class="recaptcha-box">
-                <div id="captchaClaim" class="g-recaptcha" data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm"></div>
-            </div>
+                <div class="field-group">
+                    <label for="claimNama">Nama Lengkap</label>
+                    <div class="field-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="claimNama" placeholder="Nama Pelanggan">
+                    </div>
+                </div>
 
-            <button type="button" class="action-btn" onclick="onClaimSubmit()">
-                <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan Klaim
-            </button>
+                <div class="field-group">
+                    <label for="claimEmail">Email Aktif</label>
+                    <div class="field-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="claimEmail" placeholder="nama@email.com">
+                    </div>
+                </div>
 
-            <div id="claimResult"></div>
-        </div>
+                <div class="field-group">
+                    <label for="claimDeskripsi">Deskripsi Kerusakan</label>
+                    <div class="field-wrapper">
+                        <i class="fa-solid fa-wrench"></i>
+                        <textarea id="claimDeskripsi" placeholder="Jelaskan detail kendala unit..."></textarea>
+                    </div>
+                </div>
 
+                <div class="field-group">
+                    <label for="claimFoto">Foto Kerusakan (Max 5MB)</label>
+                    <div class="field-wrapper">
+                        <i class="fa-solid fa-camera"></i>
+                        <input type="file" id="claimFoto" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="captcha-container">
+                    <div id="captchaClaim" class="g-recaptcha" data-sitekey="6Ld-I2gtAAAAAOAPiufOd_ARHEvzKzpNkhv9xgcm"></div>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="onClaimSubmit()">
+                    <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan Klaim
+                </button>
+
+                <div id="claimResult" class="output-box"></div>
+            </section>
+        </main>
     </div>
-</div>
 
-<script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2WheuyiwG9ycqPnlFRDNhrJSh9p4/exec";
+    <script>
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2Whe9uyiwG9ycqPnlFRDNhrJSh9p4/exec";
 
-    function switchTab(tabId, btn) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
-    }
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
 
-    function safeResetCaptcha(widgetId) {
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
-            if (widgetId !== undefined) {
-                grecaptcha.reset(widgetId);
-            } else {
-                grecaptcha.reset();
+        function safeResetCaptcha(widgetId) {
+            if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
+                if (widgetId !== undefined) {
+                    grecaptcha.reset(widgetId);
+                } else {
+                    grecaptcha.reset();
+                }
             }
         }
-    }
 
-    // CEK GARANSI: Menggunakan POST text/plain untuk stabilitas komunikasi
-    async function onCheckSubmit() {
-        const id = document.getElementById('warrantyId').value.trim();
-        const resultDiv = document.getElementById('result');
-        let token = '';
+        async function onCheckSubmit() {
+            const id = document.getElementById('warrantyId').value.trim();
+            const resultDiv = document.getElementById('result');
+            const token = grecaptcha.getResponse(0);
 
-        if (typeof grecaptcha !== 'undefined') {
-            try { token = grecaptcha.getResponse(0); } catch(e){}
-        }
-
-        if (!id) { 
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
-            return; 
-        }
-
-        if (!token) {
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
-            return;
-        }
-
-        resultDiv.style.display = "block";
-        resultDiv.className = "";
-        resultDiv.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Memeriksa data...";
-
-        try {
-            const payload = { action: "check", id: id, captcha: token };
-            const res = await fetch(webAppUrl, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
-            
-            if (data && data.valid) {
-                showResult(resultDiv, "valid", `
-                    <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> GARANSI VALID</div>
-                    <div class="data-row"><span>No. Garansi:</span><strong>${data.noGaransi || id}</strong></div>
-                    <div class="data-row"><span>Nama:</span><strong>${data.nama || '-'}</strong></div>
-                    <div class="data-row"><span>Produk:</span><strong>${data.produk || '-'}</strong></div>
-                    <div class="data-row"><span>Masa Kadaluarsa:</span><strong>${data.expired || '-'}</strong></div>
-                `);
-            } else {
-                showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar / tidak valid.");
+            if (!id) { 
+                showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
+                return; 
             }
-        } catch(e) {
-            showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan sistem. Coba lagi.");
-        } finally { 
-            safeResetCaptcha(0); 
-        }
-    }
 
-    // KLAIM GARANSI: Menggunakan POST text/plain untuk payload Base64 foto
-    async function onClaimSubmit() {
-        const noGaransi = document.getElementById('claimNoGaransi').value.trim();
-        const nama = document.getElementById('claimNama').value.trim();
-        const email = document.getElementById('claimEmail').value.trim();
-        const deskripsi = document.getElementById('claimDeskripsi').value.trim();
-        const fotoInput = document.getElementById('claimFoto');
-        const claimResult = document.getElementById('claimResult');
-        let token = '';
+            if (!token) {
+                showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
+                return;
+            }
 
-        if (typeof grecaptcha !== 'undefined') {
-            try { token = grecaptcha.getResponse(1); } catch(e){}
-        }
-
-        if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
-            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi semua data dan lampirkan foto.");
-            return;
-        }
-
-        if (!token) {
-            showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
-            return;
-        }
-
-        claimResult.style.display = "block";
-        claimResult.className = "";
-        claimResult.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Mengirim pengajuan klaim...";
-
-        const file = fotoInput.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async function () {
-            const base64File = reader.result;
-            const payload = {
-                action: "claim",
-                noGaransi: noGaransi,
-                nama: nama,
-                email: email,
-                deskripsi: deskripsi,
-                fileData: base64File,
-                captcha: token
-            };
+            resultDiv.style.display = "block";
+            resultDiv.className = "output-box";
+            resultDiv.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Memeriksa data...";
 
             try {
-                const res = await fetch(webAppUrl, {
-                    method: 'POST',
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
-                });
+                const res = await fetch(`${webAppUrl}?id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`);
                 const data = await res.json();
-
-                if (data && data.success) {
-                    showResult(claimResult, "valid", `
-                        <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> KLAIM BERHASIL DIAJUKAN</div>
-                        <div class="data-row"><span>No. Tiket:</span><strong>${data.ticketId || 'TK-' + Date.now().toString().slice(-6)}</strong></div>
-                        <div class="data-row"><span>Status:</span><strong>MENUNGGU ANALISA</strong></div>
-                        <small style="display:block; margin-top:8px; color:#4b5563;">Bukti penerimaan telah dikirimkan ke email Anda.</small>
+                
+                if (data.valid) {
+                    showResult(resultDiv, "valid", `
+                        <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> GARANSI VALID</div>
+                        <div class="data-row"><span>No. Garansi:</span><strong>${data.noGaransi}</strong></div>
+                        <div class="data-row"><span>Nama:</span><strong>${data.nama}</strong></div>
+                        <div class="data-row"><span>Produk:</span><strong>${data.produk}</strong></div>
+                        <div class="data-row"><span>Masa Kadaluarsa:</span><strong>${data.expired}</strong></div>
                     `);
-                    document.getElementById('claimNoGaransi').value = '';
-                    document.getElementById('claimNama').value = '';
-                    document.getElementById('claimEmail').value = '';
-                    document.getElementById('claimDeskripsi').value = '';
-                    fotoInput.value = '';
                 } else {
-                    showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Gagal memproses klaim: " + (data.error || "Kesalahan internal."));
+                    showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar / tidak valid.");
                 }
             } catch(e) {
-                showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan jaringan.");
+                showResult(resultDiv, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan sistem. Coba lagi.");
             } finally { 
-                safeResetCaptcha(1); 
+                safeResetCaptcha(0); 
             }
-        };
-        reader.onerror = function () {
-            showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal membaca file gambar.");
-            safeResetCaptcha(1);
-        };
-    }
+        }
 
-    function showResult(el, className, content) {
-        el.style.display = "block";
-        el.className = className;
-        el.innerHTML = content;
-    }
-</script>
+        async function onClaimSubmit() {
+            const noGaransi = document.getElementById('claimNoGaransi').value.trim();
+            const nama = document.getElementById('claimNama').value.trim();
+            const email = document.getElementById('claimEmail').value.trim();
+            const deskripsi = document.getElementById('claimDeskripsi').value.trim();
+            const fotoInput = document.getElementById('claimFoto');
+            const claimResult = document.getElementById('claimResult');
+            const token = grecaptcha.getResponse(1);
+
+            if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
+                showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi semua data dan lampirkan foto.");
+                return;
+            }
+
+            if (!token) {
+                showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon centang reCAPTCHA terlebih dahulu.");
+                return;
+            }
+
+            claimResult.style.display = "block";
+            claimResult.className = "output-box";
+            claimResult.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Mengirim pengajuan klaim...";
+
+            const file = fotoInput.files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async function () {
+                const base64File = reader.result;
+                const payload = {
+                    noGaransi: noGaransi,
+                    nama: nama,
+                    email: email,
+                    deskripsi: deskripsi,
+                    fileData: base64File,
+                    captcha: token
+                };
+
+                try {
+                    const res = await fetch(webAppUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        showResult(claimResult, "valid", `
+                            <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> KLAIM BERHASIL DIAJUKAN</div>
+                            <div class="data-row"><span>No. Tiket:</span><strong>${data.ticketId}</strong></div>
+                            <div class="data-row"><span>Status:</span><strong>MENUNGGU ANALISA</strong></div>
+                            <small style="display:block; margin-top:6px; color:var(--text-sub);">Bukti penerimaan telah dikirimkan ke email Anda.</small>
+                        `);
+                        document.getElementById('claimNoGaransi').value = '';
+                        document.getElementById('claimDeskripsi').value = '';
+                        fotoInput.value = '';
+                    } else {
+                        showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Gagal memproses klaim: " + (data.error || "Kesalahan internal."));
+                    }
+                } catch(e) {
+                    showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Terjadi kesalahan jaringan.");
+                } finally { 
+                    safeResetCaptcha(1); 
+                }
+            };
+            reader.onerror = function () {
+                showResult(claimResult, "invalid", "<i class='fa-solid fa-triangle-exclamation'></i> Gagal membaca file gambar.");
+                safeResetCaptcha(1);
+            };
+        }
+
+        function showResult(el, className, content) {
+            el.style.display = "block";
+            el.className = `output-box ${className}`;
+            el.innerHTML = content;
+        }
+    </script>
 </body>
 </html>
