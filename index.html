@@ -354,7 +354,7 @@
 </div>
 
 <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2Whe9uyiwG9ycqPnlFRDNhrJSh9p4/exec";
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbzv-TrI-HkrhvyihaQ7HLpww42qfwzVPhW4eJB2WheuyiwG9ycqPnlFRDNhrJSh9p4/exec";
 
     function switchTab(tabId, btn) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -373,10 +373,15 @@
         }
     }
 
+    // CEK GARANSI: Menggunakan POST text/plain untuk stabilitas komunikasi
     async function onCheckSubmit() {
         const id = document.getElementById('warrantyId').value.trim();
         const resultDiv = document.getElementById('result');
-        const token = grecaptcha.getResponse(0);
+        let token = '';
+
+        if (typeof grecaptcha !== 'undefined') {
+            try { token = grecaptcha.getResponse(0); } catch(e){}
+        }
 
         if (!id) { 
             showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon masukkan nomor garansi."); 
@@ -393,16 +398,22 @@
         resultDiv.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Memeriksa data...";
 
         try {
-            const res = await fetch(`${webAppUrl}?id=${encodeURIComponent(id)}&captcha=${encodeURIComponent(token)}`);
+            const payload = { action: "check", id: id, captcha: token };
+            const res = await fetch(webAppUrl, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            });
+
             const data = await res.json();
             
-            if (data.valid) {
+            if (data && data.valid) {
                 showResult(resultDiv, "valid", `
                     <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> GARANSI VALID</div>
-                    <div class="data-row"><span>No. Garansi:</span><strong>${data.noGaransi}</strong></div>
-                    <div class="data-row"><span>Nama:</span><strong>${data.nama}</strong></div>
-                    <div class="data-row"><span>Produk:</span><strong>${data.produk}</strong></div>
-                    <div class="data-row"><span>Masa Kadaluarsa:</span><strong>${data.expired}</strong></div>
+                    <div class="data-row"><span>No. Garansi:</span><strong>${data.noGaransi || id}</strong></div>
+                    <div class="data-row"><span>Nama:</span><strong>${data.nama || '-'}</strong></div>
+                    <div class="data-row"><span>Produk:</span><strong>${data.produk || '-'}</strong></div>
+                    <div class="data-row"><span>Masa Kadaluarsa:</span><strong>${data.expired || '-'}</strong></div>
                 `);
             } else {
                 showResult(resultDiv, "invalid", "<i class='fa-solid fa-circle-xmark'></i> Nomor garansi tidak terdaftar / tidak valid.");
@@ -414,6 +425,7 @@
         }
     }
 
+    // KLAIM GARANSI: Menggunakan POST text/plain untuk payload Base64 foto
     async function onClaimSubmit() {
         const noGaransi = document.getElementById('claimNoGaransi').value.trim();
         const nama = document.getElementById('claimNama').value.trim();
@@ -421,7 +433,11 @@
         const deskripsi = document.getElementById('claimDeskripsi').value.trim();
         const fotoInput = document.getElementById('claimFoto');
         const claimResult = document.getElementById('claimResult');
-        const token = grecaptcha.getResponse(1);
+        let token = '';
+
+        if (typeof grecaptcha !== 'undefined') {
+            try { token = grecaptcha.getResponse(1); } catch(e){}
+        }
 
         if (!noGaransi || !nama || !email || !deskripsi || fotoInput.files.length === 0) {
             showResult(claimResult, "invalid", "<i class='fa-solid fa-circle-exclamation'></i> Mohon lengkapi semua data dan lampirkan foto.");
@@ -443,6 +459,7 @@
         reader.onload = async function () {
             const base64File = reader.result;
             const payload = {
+                action: "claim",
                 noGaransi: noGaransi,
                 nama: nama,
                 email: email,
@@ -454,18 +471,21 @@
             try {
                 const res = await fetch(webAppUrl, {
                     method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
 
-                if (data.success) {
+                if (data && data.success) {
                     showResult(claimResult, "valid", `
                         <div style="margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> KLAIM BERHASIL DIAJUKAN</div>
-                        <div class="data-row"><span>No. Tiket:</span><strong>${data.ticketId}</strong></div>
+                        <div class="data-row"><span>No. Tiket:</span><strong>${data.ticketId || 'TK-' + Date.now().toString().slice(-6)}</strong></div>
                         <div class="data-row"><span>Status:</span><strong>MENUNGGU ANALISA</strong></div>
                         <small style="display:block; margin-top:8px; color:#4b5563;">Bukti penerimaan telah dikirimkan ke email Anda.</small>
                     `);
                     document.getElementById('claimNoGaransi').value = '';
+                    document.getElementById('claimNama').value = '';
+                    document.getElementById('claimEmail').value = '';
                     document.getElementById('claimDeskripsi').value = '';
                     fotoInput.value = '';
                 } else {
